@@ -9,6 +9,11 @@ namespace EntityPG.Model
         {
             _dataContext = dataContext;
         }
+
+        /// <summary>
+        /// GET
+        /// </summary>
+        /// <returns></returns>
         public List<ProductModel> GetProducts()
         { 
             List<ProductModel> responce = new List<ProductModel>();
@@ -21,6 +26,23 @@ namespace EntityPG.Model
                 size = row.size
             }));
             return responce;
+        }
+
+        /// <summary>
+        /// GET
+        /// </summary>
+        /// <returns></returns>
+        public ProductModel GetProductsById(int id)
+        {
+            //ProductModel responce = new ProductModel();
+            var row  = _dataContext.Products.Where(p => p.id.Equals(id)).FirstOrDefault();
+            return new ProductModel() { 
+                brand = row?.brand,
+                id = (int)row?.id,
+                name = row?.name,
+                price = (int)row?.price,
+                size = (int)row?.size
+            };
         }
 
         /// <summary>
@@ -47,6 +69,20 @@ namespace EntityPG.Model
                     dbTable.product = _dataContext.Products.Where(o => o.id.Equals(orderModel.product_id)).FirstOrDefault();
                     _dataContext.Orders.Add(dbTable);
                 }
+                _dataContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="id"></param>
+        public void DeleteOrder(int id)
+        {
+            var order = _dataContext.Orders.Where(o => o.id.Equals(id)).FirstOrDefault();
+            if (order != null)
+            {
+                _dataContext.Orders.Remove(order);
                 _dataContext.SaveChanges();
             }
         }
